@@ -30,7 +30,7 @@ namespace FootballCli.Commands
             table.AddColumn(new TableColumn("Score").Centered());
             table.AddColumn("Away");
 
-            var matches = await _football.GetMatches();
+            var matches = await _football.GetMatches(settings.CompetitionCode, settings.Matchday);
             foreach(var match in matches.Matches)
             {
                 var colour = PrettyPrintColour(match.Status);
