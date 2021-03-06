@@ -54,6 +54,11 @@ namespace FootballCli
                     config.Settings.ApplicationName = "Football cli";
                     config.ValidateExamples();
 
+                    config.AddCommand<CompetitionCommand>("competition")
+                        .WithDescription("View available competitions")
+                        .WithExample(new[] { "competition" })
+                    ;
+
                     config.AddCommand<LiveScoresCommand>("live")
                         .WithDescription("View live scores")
                         .WithExample(new[] { "live", "-f", "--follow-live" })
