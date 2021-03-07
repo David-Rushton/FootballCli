@@ -15,10 +15,10 @@ namespace FootballCli.Commands
     {
         readonly ILogger<CompetitionCommand> _logger;
 
-        readonly Football _football;
+        readonly FootballFactory _football;
 
 
-        public CompetitionCommand(ILogger<CompetitionCommand> logger, Football football) =>
+        public CompetitionCommand(ILogger<CompetitionCommand> logger, FootballFactory football) =>
             (_logger, _football) = (logger, football)
         ;
 

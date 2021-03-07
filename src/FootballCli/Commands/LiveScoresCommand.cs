@@ -14,23 +14,34 @@ namespace FootballCli.Commands
     {
         readonly ILogger<LiveScoresCommand> _logger;
 
-        readonly Football _football;
+        readonly FootballFactory _footballFactory;
 
 
-        public LiveScoresCommand(ILogger<LiveScoresCommand> logger, Football football) =>
-            (_logger, _football) = (logger, football)
+        public LiveScoresCommand(ILogger<LiveScoresCommand> logger, FootballFactory football) =>
+            (_logger, _footballFactory) = (logger, football)
         ;
 
 
         public override async Task<int> ExecuteAsync(CommandContext context, LiveScoresSettings settings)
         {
+            // ----------------------------------
+
+            var xxx = await _footballFactory.GetCompetitions();
+            xxx.SelectCompetition();
+
+
+            // ----------------------------------
+
+
+
+
             var table = new Table();
             table.Border(TableBorder.Rounded);
             table.AddColumn(new TableColumn("Home").RightAligned());
             table.AddColumn(new TableColumn("Score").Centered());
             table.AddColumn("Away");
 
-            var matches = await _football.GetMatches(settings.CompetitionCode, settings.Matchday);
+            var matches = await _footballFactory.GetMatches(settings.CompetitionCode, settings.Matchday);
             foreach(var match in matches.Matches)
             {
                 var colour = PrettyPrintColour(match.Status);

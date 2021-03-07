@@ -39,7 +39,7 @@ namespace FootballCli
                         config.AddSimpleConsole();
                     }
                 )
-                .AddSingleton<Football>()
+                .AddSingleton<FootballFactory>()
                 .Configure<SourceConfig>(configuration.GetSection("source"))
             ;
 

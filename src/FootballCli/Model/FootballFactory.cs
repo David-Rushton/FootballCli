@@ -15,11 +15,13 @@ using System.Threading.Tasks;
 namespace FootballCli.Model
 {
     // todo: caching
-    public class Football
+    public class FootballFactory
     {
         const string CompetitionsUri = "http://api.football-data.org/v2/competitions/?plan=TIER_ONE";
 
         const string MatchesUri = "http://api.football-data.org/v2/competitions/<COMPETITION_CODE>/matches/?matchday=<MATCHDAY>";
+
+        FootballCompetitions? _competitions;
 
 
         readonly SourceConfig _config;
@@ -27,7 +29,7 @@ namespace FootballCli.Model
         private readonly HttpClient _client = new();
 
 
-        public Football(IOptions<SourceConfig> config)
+        public FootballFactory(IOptions<SourceConfig> config)
         {
             _config = config.Value;
             InitialiseClient();
