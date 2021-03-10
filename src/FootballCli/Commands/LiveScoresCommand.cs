@@ -1,10 +1,12 @@
 using FootballCli.Config;
 using FootballCli.Commands.Settings;
 using FootballCli.Model;
+using FootballCli.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -14,20 +16,39 @@ namespace FootballCli.Commands
     {
         readonly ILogger<LiveScoresCommand> _logger;
 
-        readonly FootballFactory _footballFactory;
+        readonly CompetitionRepository _competitionRepository;
+
+        readonly MatchRepository _matchRepository;
 
 
-        public LiveScoresCommand(ILogger<LiveScoresCommand> logger, FootballFactory football) =>
-            (_logger, _footballFactory) = (logger, football)
+        public LiveScoresCommand(
+            ILogger<LiveScoresCommand> logger,
+            CompetitionRepository competitionRepository,
+            MatchRepository matchRepository
+        ) =>
+            (_logger, _competitionRepository, _matchRepository) = (logger, competitionRepository, matchRepository)
         ;
 
 
         public override async Task<int> ExecuteAsync(CommandContext context, LiveScoresSettings settings)
         {
-            // ----------------------------------
+            var competition =
+            (
+                from footballCompetition in (await _competitionRepository.GetCompetitions()).Competitions
+                where footballCompetition.Code.ToLower() == settings.CompetitionCode
+                select new
+                {
+                    Code = footballCompetition.Code,
+                    CurrentMatchday = footballCompetition.CurrentSeason.CurrentMatchday
+                }
+            ).FirstOrDefault();
 
-            var xxx = await _footballFactory.GetCompetitions();
-            xxx.SelectCompetition();
+
+            if(competition is null)
+                throw new System.Exception($"Competition code not supported: {settings.CompetitionCode}\nSee: FootballCli competition");
+
+
+
 
 
             // ----------------------------------
@@ -41,7 +62,7 @@ namespace FootballCli.Commands
             table.AddColumn(new TableColumn("Score").Centered());
             table.AddColumn("Away");
 
-            var matches = await _footballFactory.GetMatches(settings.CompetitionCode, settings.Matchday);
+            var matches = await _matchRepository.GetMatches(settings.CompetitionCode.ToUpper(), settings.Matchday);
             foreach(var match in matches.Matches)
             {
                 var colour = PrettyPrintColour(match.Status);
@@ -59,6 +80,18 @@ namespace FootballCli.Commands
 
 
             string PrettyPrintColour(string status) => status == "FINISHED" ? "yellow" : "white";
+        }
+
+
+        private async Task<bool> IsCompetitionCodeValid(string competitionCode)
+        {
+            var competitionCodes =
+                from competition in (await FootballCompetitions.Get()).Competitions
+                select competition.Code.ToLower()
+            ;
+
+
+            return competitionCodes.Contains(competitionCode.ToLower());
         }
     }
 }

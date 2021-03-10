@@ -1,6 +1,7 @@
 ﻿using FootballCli.Config;
 using FootballCli.Commands;
 using FootballCli.Model;
+using FootballCli.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.Logging;
@@ -41,6 +42,8 @@ namespace FootballCli
                 )
                 .AddSingleton<FootballFactory>()
                 .Configure<SourceConfig>(configuration.GetSection("source"))
+                .AddTransient<CompetitionRepository>()
+                .AddTransient<MatchRepository>()
             ;
 
 
