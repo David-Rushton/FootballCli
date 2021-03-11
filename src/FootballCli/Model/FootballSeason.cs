@@ -20,7 +20,7 @@ namespace FootballCli.Model
         [JsonPropertyName("currentMatchday")]
         public int CurrentMatchday { get; init; }
 
-        [JsonPropertyName("lastUpdated")]
+        [JsonPropertyName("winner")]
         public string? Winner { get; init; }
     }
 }

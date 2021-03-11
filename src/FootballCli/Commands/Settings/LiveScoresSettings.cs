@@ -9,7 +9,7 @@ namespace FootballCli.Commands.Settings
     public class LiveScoresSettings : CommandSettings
     {
         [CommandArgument(0, "<COMPETITION_CODE>")]
-        public string CompetitionCode { get; set; }
+        public string CompetitionCode { get; set; } = string.Empty;
 
         [CommandOption("-f|--follow-live")]
         [Description("Follow the live action")]

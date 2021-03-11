@@ -43,6 +43,7 @@ namespace FootballCli
                 .AddSingleton<FootballFactory>()
                 .Configure<SourceConfig>(configuration.GetSection("source"))
                 .AddTransient<CompetitionRepository>()
+                .AddTransient<LeagueRepository>()
                 .AddTransient<MatchRepository>()
             ;
 
@@ -50,12 +51,17 @@ namespace FootballCli
             using var registrar = new DependencyInjectionRegistrar(serviceCollection);
             var app = new CommandApp(registrar);
 
+
             app.Configure
             (
                 config =>
                 {
                     config.Settings.ApplicationName = "Football cli";
                     config.ValidateExamples();
+
+                    // todo: _maybe_ enable in dev mode.
+                    config.Settings.PropagateExceptions = true;
+
 
                     config.AddCommand<CompetitionCommand>("competition")
                         .WithDescription("View available competitions")
@@ -65,6 +71,11 @@ namespace FootballCli
                     config.AddCommand<LiveScoresCommand>("live")
                         .WithDescription("View live scores")
                         .WithExample(new[] { "live", "-f", "--follow-live" })
+                    ;
+
+                    config.AddCommand<TableCommand>("table")
+                        .WithDescription("View league standings")
+                        .WithExample(new[] { "table" })
                     ;
                 }
             );
