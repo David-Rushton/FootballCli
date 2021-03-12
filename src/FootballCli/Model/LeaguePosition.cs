@@ -20,7 +20,7 @@ namespace FootballCli.Model
         [JsonPropertyName("won")]
         public int Won { get; init; }
 
-        [JsonPropertyName("drawn")]
+        [JsonPropertyName("draw")]
         public int Drawn { get; init; }
 
         [JsonPropertyName("lost")]

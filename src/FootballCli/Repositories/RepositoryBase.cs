@@ -29,3 +29,18 @@ namespace FootballCli.Repositories
         }
     }
 }
+
+
+/*
+HTTP error codes returned
+400 Bad Request	Your request was malformed. Most likely the value of a Filter was not set according to the Data Type that is expected.
+403 Restricted Resource	You tried to access a resource that exists, but is not available to you. This can be due to the following reasons:
+the resource is only available to authenticated clients.
+
+the resource is only available to clients with a paid subscription.
+
+the resource is not available in the API version you are using.
+
+404 Not Found	You tried to access a resource that doesn't exist
+429 Too Many Requests	You exceeded your API request quota. See Request-Throttling for more information.
+*/

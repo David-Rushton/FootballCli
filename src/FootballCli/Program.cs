@@ -40,7 +40,6 @@ namespace FootballCli
                         config.AddSimpleConsole();
                     }
                 )
-                .AddSingleton<FootballFactory>()
                 .Configure<SourceConfig>(configuration.GetSection("source"))
                 .AddTransient<CompetitionRepository>()
                 .AddTransient<LeagueRepository>()

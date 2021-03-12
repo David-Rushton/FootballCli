@@ -34,8 +34,8 @@ namespace FootballCli.Commands
         {
             var competition =
             (
-                from footballCompetition in (await _competitionRepository.GetCompetitions()).Competitions
-                where footballCompetition.Code.ToLower() == settings.CompetitionCode
+                from footballCompetition in (await _competitionRepository.GetCompetitions()).Items
+                where footballCompetition.Code.ToLower() == settings.CompetitionCode.ToLower()
                 select new
                 {
                     Code = footballCompetition.Code,
@@ -62,7 +62,8 @@ namespace FootballCli.Commands
             table.AddColumn(new TableColumn("Score").Centered());
             table.AddColumn("Away");
 
-            var matches = await _matchRepository.GetMatches(settings.CompetitionCode.ToUpper(), settings.Matchday);
+            // bug: matchday can be zero here.
+            var matches = await _matchRepository.GetMatches(settings.CompetitionCode, settings.Matchday);
             foreach(var match in matches.Matches)
             {
                 var colour = PrettyPrintColour(match.Status);
@@ -86,7 +87,7 @@ namespace FootballCli.Commands
         private async Task<bool> IsCompetitionCodeValid(string competitionCode)
         {
             var competitionCodes =
-                from competition in (await FootballCompetitions.Get()).Competitions
+                from competition in (await _competitionRepository.GetCompetitions()).Items
                 select competition.Code.ToLower()
             ;
 

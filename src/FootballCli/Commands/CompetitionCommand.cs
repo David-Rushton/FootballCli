@@ -16,17 +16,17 @@ namespace FootballCli.Commands
     {
         readonly ILogger<CompetitionCommand> _logger;
 
-        readonly MatchRepository _matchRepository;
+        readonly CompetitionRepository _competitionRepository;
 
 
-        public CompetitionCommand(ILogger<CompetitionCommand> logger, MatchRepository matchRepository) =>
-            (_logger, _matchRepository) = (logger, matchRepository)
+        public CompetitionCommand(ILogger<CompetitionCommand> logger, CompetitionRepository competitionRepository) =>
+            (_logger, _competitionRepository) = (logger, competitionRepository)
         ;
 
 
         public override async Task<int> ExecuteAsync(CommandContext context)
         {
-            var competitions = await FootballCompetitions.Get();
+            var allCompetitions = await _competitionRepository.GetCompetitions();
 
             var table = new Table();
             table.Border(TableBorder.Rounded);
@@ -34,7 +34,7 @@ namespace FootballCli.Commands
             table.AddColumn("Name");
             table.AddColumn("Current Matchday");
 
-            foreach(var competition in competitions.Competitions.OrderBy(c => c.Name))
+            foreach(var competition in allCompetitions.Items.OrderBy(c => c.Name))
                 table.AddRow
                 (
                     competition.Code,

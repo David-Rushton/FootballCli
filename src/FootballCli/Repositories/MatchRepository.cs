@@ -30,7 +30,7 @@ namespace FootballCli.Repositories
 
         public async Task<FootballMatches> GetMatches(string competitionCode, int matchday)
         {
-            var uri = MatchesUri.Replace("<COMPETITION_CODE>", competitionCode).Replace("<MATCHDAY>", matchday.ToString());
+            var uri = MatchesUri.Replace("<COMPETITION_CODE>", competitionCode.ToUpper()).Replace("<MATCHDAY>", matchday.ToString());
             var stream = _client.GetStreamAsync(uri);
             var matches = await JsonSerializer.DeserializeAsync<FootballMatches>(await stream);
 
