@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FootballCli.Commands
 {
-    public class TableCommand : AsyncCommand
+    public class TableCommand : AsyncCommand<TableSettings>
     {
         readonly ILogger<TableCommand> _logger;
 
@@ -24,10 +24,10 @@ namespace FootballCli.Commands
         ;
 
 
-        public override async Task<int> ExecuteAsync(CommandContext context)
+        public override async Task<int> ExecuteAsync(CommandContext context, TableSettings settings)
         {
             // todo: hard coded competition code
-            var leagueTable = await _leagueRepository.GetLeagueTable("PL");
+            var leagueTable = await _leagueRepository.GetLeagueTable(settings.CompetitionCode);
             var standing = leagueTable.Standings.Where(s => s.Type == "TOTAL").First();
 
             var table = new Table()
@@ -65,6 +65,8 @@ namespace FootballCli.Commands
                     position.Points.ToString()
                 );
 
+                // todo: this only works for the Prem.
+                // todo: replace with TableFormatters, for selected competitions (CL, ECL and PL + generic)
                 if(position.Position is 4 or 17)
                     table.AddEmptyRow();
             }
