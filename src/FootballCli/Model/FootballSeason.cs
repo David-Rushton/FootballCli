@@ -21,6 +21,6 @@ namespace FootballCli.Model
         public int CurrentMatchday { get; init; }
 
         [JsonPropertyName("winner")]
-        public string? Winner { get; init; }
+        public FootballSeasonWinner? Winner { get; init; } = new();
     }
 }
