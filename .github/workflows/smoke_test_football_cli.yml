@@ -29,4 +29,4 @@ jobs:
       env:
         # Additional checks are run at startup in Development mode
         DOTNET_ENVIRONMENT: Development
-      run: dotnet run -- competition
+      run: dotnet run --no-build -- competition
