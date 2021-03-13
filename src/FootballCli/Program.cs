@@ -15,11 +15,12 @@ using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
 
+
 namespace FootballCli
 {
     class Program
     {
-        static string HostEnvironment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
+        static string HostEnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
 
 
         static async Task<int> Main(string[] args) =>
@@ -31,60 +32,32 @@ namespace FootballCli
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddEnvironmentVariables("fbcli")
                 .Build()
             ;
 
             var serviceCollection = new ServiceCollection()
-                .AddLogging
-                (
-                    config =>
-                    {
-                        config.AddSimpleConsole();
-                    }
-                )
-                .Configure<SourceConfig>(configuration.GetSection("source"))
-                .AddTransient<CompetitionRepository>()
-                .AddTransient<LeagueRepository>()
-                .AddTransient<MatchRepository>()
+                .AddLogging(config => config.AddSimpleConsole())
+                .AddFootballCli(configuration)
             ;
-
 
             using var registrar = new DependencyInjectionRegistrar(serviceCollection);
             var app = new CommandApp(registrar);
-
 
             app.Configure
             (
                 config =>
                 {
-                    config.Settings.ApplicationName = "Football cli";
-                    config.UseStrictParsing();
-
-                    if(HostEnvironment == "Development")
-                    {
-                        // smoke testing required to ensure examples are always valid
-                        config.ValidateExamples();
-                        config.Settings.PropagateExceptions = true;
-                    }
-
-
-                    config.AddCommand<CompetitionCommand>("competition")
-                        .WithDescription("View available competitions")
-                        .WithExample(new[] { "competition" })
-                    ;
-
-                    config.AddCommand<LiveScoresCommand>("live")
-                        .WithDescription("View live scores")
-                        .WithExample(new[] { "live", "-f", "--follow" })
-                    ;
-
-                    config.AddCommand<TableCommand>("table")
-                        .WithDescription("View league standings")
-                        .WithExample(new[] { "table" })
+                    config
+                        .SetApplicationName("Football Cli")
+                        .UseStrictParsing()
+                        .UseEnvironmentSpecificConfig(HostEnvironmentName)
+                        .AddCommands()
                     ;
                 }
             );
+
 
             return app;
         }
