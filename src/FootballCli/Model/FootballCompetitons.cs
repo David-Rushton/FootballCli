@@ -16,11 +16,11 @@ namespace FootballCli.Model
         public int Count { get; init; }
 
         [JsonPropertyName("competitions")]
-        public List<FootballCompetition> Items { get; init; } = new();
+        public List<FootballCompetitionCurrentSeason> Items { get; init; } = new();
 
-        public FootballCompetition this[int index] => Items[index];
+        public FootballCompetitionCurrentSeason this[int index] => Items[index];
 
-        public FootballCompetition this[string code] => Items.Where(c => c.Code == code).First();
+        public FootballCompetitionCurrentSeason this[string code] => Items.Where(c => c.Code == code).First();
 
 
         public bool IsValidCompetitionCode(string code) => Items.Exists(c => c.Code == code);

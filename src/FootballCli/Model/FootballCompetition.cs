@@ -17,9 +17,6 @@ namespace FootballCli.Model
         [JsonPropertyName("code")]
         public string Code { get; init; } = string.Empty;
 
-        [JsonPropertyName("currentSeason")]
-        public FootballSeason CurrentSeason { get; set; } = new();
-
         [JsonPropertyName("lastUpdated")]
         public DateTime LastUpdated { get; init; }
     }

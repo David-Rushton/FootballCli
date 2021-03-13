@@ -108,13 +108,5 @@ namespace FootballCli.Commands
 
             return competitionCodes.Contains(competitionCode.ToLower());
         }
-
-
-        public class InvalidCompetitionCodeException : Exception
-        {
-            public InvalidCompetitionCodeException(string competitionCode)
-                : base($"Competition code not supported: {competitionCode}.\nSee: FootballCli competitions")
-            { }
-        }
     }
 }

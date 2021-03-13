@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.4.0
+
+We now support different custom views for different competition tables.
+
 ## 0.3.0
 
 Follow live implemented :)

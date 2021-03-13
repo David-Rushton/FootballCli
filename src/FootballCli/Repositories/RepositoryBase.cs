@@ -67,7 +67,7 @@ namespace FootballCli.Repositories
         /// Maps server exceptions to client friendly messages.
         /// </summary>
         /// <param name="exception">Server exception</param>
-        /// <returns></returns>
+        /// <returns>string</returns>
         private string GetHttpRequestExceptionMessage(HttpRequestException exception)
         {
             if(exception.StatusCode is null)
