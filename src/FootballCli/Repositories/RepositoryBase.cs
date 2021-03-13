@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
@@ -16,31 +17,77 @@ namespace FootballCli.Repositories
 {
     public class RepositoryBase
     {
-        readonly protected HttpClient _client = new();
+        const string _fallbackExceptionMessage = "Something went wrong.  Unable to download football data.  :(";
 
-        readonly protected SourceConfig _config;
+        const string BaseUri = "http://api.football-data.org";
+
+        readonly HttpClient _client = new();
+
+        readonly SourceConfig _config;
 
 
         public RepositoryBase(IOptions<SourceConfig> config)
         {
             _config = config.Value;
+            _client.BaseAddress = new System.Uri(BaseUri);
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Add("X-Auth-Token", _config!.ApiKey);
         }
+
+
+        protected async Task<T> GetResource<T>(string uri)
+        {
+            try
+            {
+                var stream = _client.GetStreamAsync(uri);
+                var resource = await JsonSerializer.DeserializeAsync<T>(await stream);
+
+                if(resource is null)
+                    throw new Exception("Could not retrieve football data :(");
+
+                return resource;
+            }
+            catch(HttpRequestException e)
+            {
+                throw new Exception(GetHttpRequestExceptionMessage(e), e);
+            }
+            catch(TaskCanceledException)
+            {
+                // todo: we don't current support cancellation tokens
+                throw new Exception("Request cancelled");
+            }
+            catch(Exception e)
+            {
+                throw new Exception(_fallbackExceptionMessage, e);
+            }
+        }
+
+
+        /// <summary>
+        /// Maps server exceptions to client friendly messages.
+        /// </summary>
+        /// <param name="exception">Server exception</param>
+        /// <returns></returns>
+        private string GetHttpRequestExceptionMessage(HttpRequestException exception)
+        {
+            if(exception.StatusCode is null)
+                return _fallbackExceptionMessage;
+
+
+            // Server error messages:
+            // www.football-data.org/documentation/api#http-errors
+            //   400 - Bad/malformed request.  Most likely an unsupported filter value.
+            //   403 - Restricted .  Upgrade subscription to access.
+            //   404 - Not found.
+            //   429 - Rate limit exceeded.
+            return ((int)exception.StatusCode) switch
+            {
+                400 => _fallbackExceptionMessage,
+                403 => "Please upgrade your //football-data.org subscription to access this resource",
+                404 => _fallbackExceptionMessage,
+                429 => "Rate limit exceeded.  Please try again later.",
+                _   => _fallbackExceptionMessage,
+            };
+        }
     }
 }
-
-
-/*
-HTTP error codes returned
-400 Bad Request	Your request was malformed. Most likely the value of a Filter was not set according to the Data Type that is expected.
-403 Restricted Resource	You tried to access a resource that exists, but is not available to you. This can be due to the following reasons:
-the resource is only available to authenticated clients.
-
-the resource is only available to clients with a paid subscription.
-
-the resource is not available in the API version you are using.
-
-404 Not Found	You tried to access a resource that doesn't exist
-429 Too Many Requests	You exceeded your API request quota. See Request-Throttling for more information.
-*/

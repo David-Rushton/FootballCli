@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.3.0
+
+Follow live implemented :)
+It's a big ugly :(
+
 ## 0.2.0
 
 Build and config instructions added to the readme file.

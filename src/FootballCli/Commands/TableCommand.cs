@@ -26,13 +26,12 @@ namespace FootballCli.Commands
 
         public override async Task<int> ExecuteAsync(CommandContext context, TableSettings settings)
         {
-            // todo: hard coded competition code
             var leagueTable = await _leagueRepository.GetLeagueTable(settings.CompetitionCode);
             var standing = leagueTable.Standings.Where(s => s.Type == "TOTAL").First();
 
             var table = new Table()
                 // todo: league competition name + better colour and position.
-                .Caption("Table")
+                .Caption("As it stands")
                 .Border(TableBorder.Rounded)
                 .AddColumn(new TableColumn("Position").RightAligned())
                 .AddColumn(new TableColumn("Team").LeftAligned())

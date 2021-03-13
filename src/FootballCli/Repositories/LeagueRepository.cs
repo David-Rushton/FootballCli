@@ -31,14 +31,7 @@ namespace FootballCli.Repositories
         public async Task<LeagueTable> GetLeagueTable(string competitionCode)
         {
             var uri = MatchesUri.Replace("<COMPETITION_CODE>", competitionCode);
-            var stream = _client.GetStreamAsync(uri);
-            var leagueTable = await JsonSerializer.DeserializeAsync<LeagueTable>(await stream);
-
-            // todo: non-200s
-            Debug.Assert(leagueTable is not null, "League table is null");
-
-
-            return leagueTable;
+            return await base.GetResource<LeagueTable>(uri);
         }
     }
 }

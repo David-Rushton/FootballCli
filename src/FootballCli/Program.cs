@@ -11,14 +11,17 @@ using Spectre.Cli.Extensions.DependencyInjection;
 using Spectre.Console;
 using Spectre.Console.Cli;
 using System;
+using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
-
 
 namespace FootballCli
 {
     class Program
     {
+        static string HostEnvironment = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? "Production";
+
+
         static async Task<int> Main(string[] args) =>
             await Bootstrap().RunAsync(args)
         ;
@@ -56,10 +59,14 @@ namespace FootballCli
                 config =>
                 {
                     config.Settings.ApplicationName = "Football cli";
-                    config.ValidateExamples();
+                    config.UseStrictParsing();
 
-                    // todo: _maybe_ enable in dev mode.
-                    config.Settings.PropagateExceptions = true;
+                    if(HostEnvironment == "Development")
+                    {
+                        // smoke testing required to ensure examples are always valid
+                        config.ValidateExamples();
+                        config.Settings.PropagateExceptions = true;
+                    }
 
 
                     config.AddCommand<CompetitionCommand>("competition")
@@ -69,7 +76,7 @@ namespace FootballCli
 
                     config.AddCommand<LiveScoresCommand>("live")
                         .WithDescription("View live scores")
-                        .WithExample(new[] { "live", "-f", "--follow-live" })
+                        .WithExample(new[] { "live", "-f", "--follow" })
                     ;
 
                     config.AddCommand<TableCommand>("table")

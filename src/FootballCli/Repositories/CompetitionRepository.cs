@@ -28,16 +28,8 @@ namespace FootballCli.Repositories
         ;
 
 
-        public async Task<FootballCompetitions> GetCompetitions()
-        {
-            var stream = _client.GetStreamAsync(CompetitionsUri);
-            var competitions = await JsonSerializer.DeserializeAsync<FootballCompetitions>(await stream);
-
-            // todo: better handing of failed returns - perhaps via base?
-            Debug.Assert(competitions is not null, "Competitions is null");
-
-
-            return competitions;
-        }
+        public async Task<FootballCompetitions> GetCompetitions() =>
+            await base.GetResource<FootballCompetitions>(CompetitionsUri)
+        ;
     }
 }

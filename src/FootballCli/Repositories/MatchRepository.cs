@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
 using Spectre.Console.Cli;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Http;
@@ -17,7 +18,9 @@ namespace FootballCli.Repositories
 {
     public class MatchRepository : RepositoryBase
     {
-        const string MatchesUri = "http://api.football-data.org/v2/competitions/<COMPETITION_CODE>/matches/?matchday=<MATCHDAY>";
+        const string MatchdayUriTemplate = "v2/competitions/<COMPETITION_CODE>/matches/?matchday=<MATCHDAY>";
+
+        const string LiveUriTemplate = "v2/competitions/<COMPETITION_CODE>/matches/?dateFrom=<TODAY>&dateTo=<TODAY>";
 
         readonly ILogger<MatchRepository> _logger;
 
@@ -28,17 +31,25 @@ namespace FootballCli.Repositories
         ;
 
 
-        public async Task<FootballMatches> GetMatches(string competitionCode, int matchday)
-        {
-            var uri = MatchesUri.Replace("<COMPETITION_CODE>", competitionCode.ToUpper()).Replace("<MATCHDAY>", matchday.ToString());
-            var stream = _client.GetStreamAsync(uri);
-            var matches = await JsonSerializer.DeserializeAsync<FootballMatches>(await stream);
+        public async Task<FootballMatches> GetLiveMatches(string competitionCode) =>
+            await base.GetResource<FootballMatches>(GetLiveUri(competitionCode))
+        ;
 
-            // todo: non-200s
-            Debug.Assert(matches is not null, "Matches is null");
+        public async Task<FootballMatches> GetMatchesByMatchday(string competitionCode, int matchday) =>
+            await base.GetResource<FootballMatches>(GetMatchdayUri(competitionCode, matchday))
+        ;
 
 
-            return matches;
-        }
+        private string GetLiveUri(string competitionCode) =>
+            LiveUriTemplate
+                .Replace("<COMPETITION_CODE>", competitionCode.ToUpper())
+                .Replace("<TODAY>", DateTime.Now.ToString("yyyy-MM-dd"))
+        ;
+
+        private string GetMatchdayUri(string competitionCode, int matchday) =>
+            LiveUriTemplate
+                .Replace("<COMPETITION_CODE>", competitionCode.ToUpper())
+                .Replace("<MATCHDAY>", matchday.ToString())
+        ;
     }
 }
