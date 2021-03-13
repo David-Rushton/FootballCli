@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.2.0
+
+Build and config instructions added to the readme file.
+
 ## 0.1.0
 
 Progress!  Although the app is flakey and unfinished; the core concepts have been proved.
