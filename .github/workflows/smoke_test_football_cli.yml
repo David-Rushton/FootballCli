@@ -1,0 +1,32 @@
+name: Smoke Test Football Cli
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src/FootballCli
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build Football Cli 
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Smoke Test
+      env:
+        # Additional checks are run at startup in Development mode
+        DOTNET_ENVIRONMENT: Development
+      run: dotnet run --no-build -- competition
