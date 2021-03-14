@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text.Json.Serialization;
 
 
@@ -14,6 +15,13 @@ namespace FootballCli.Model
 
         [JsonPropertyName("group")]
         public string? Group { get; init; } = string.Empty;
+
+        public string PrettyPrintGroup =>
+            new CultureInfo("en-GB")
+                .TextInfo
+                .ToTitleCase(Group?.ToLower() ?? string.Empty)
+                .Replace('_', ' ')
+        ;
 
         [JsonPropertyName("table")]
         public List<LeaguePosition> Positions { get; init; } = new();

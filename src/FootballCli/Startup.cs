@@ -25,6 +25,7 @@ namespace FootballCli
         {
             serviceCollection
                 .Configure<SourceConfig>(config.GetSection("source"))
+                .Configure<FavouriteTeamConfig>(config.GetSection("favouriteTeam"))
                 .AddTransient<TableViewFactory>()
                 .AddTransient<CompetitionRepository>()
                 .AddTransient<LeagueRepository>()
