@@ -44,7 +44,7 @@ namespace FootballCli.Model
                 "FINISHED"  => FootballMatchStatusCode.Finished,
                 "POSTPONED" => FootballMatchStatusCode.Postponed,
                 "SUSPENDED" => FootballMatchStatusCode.Suspended,
-                // not a typo:  [Canceled/Cancelled] Source uses US English, this app uses UK.
+                // not a typo:  [Canceled/Cancelled] Source uses US English, this app uses British.
                 "CANCELED"  => FootballMatchStatusCode.Cancelled,
                 _           => throw new Exception($"Football match status code not supported: {Status}")
             }
@@ -62,5 +62,22 @@ namespace FootballCli.Model
         [JsonPropertyName("score")]
         public FootballMatchScore Score { get; init; } = new();
 
+
+        public string PrettyPrintScore() => $"{Score.FullTime.HomeTeam} - {Score.FullTime.AwayTeam}";
+
+        public string PrettyPrintState() =>
+            StatusCode switch
+            {
+                FootballMatchStatusCode.Scheduled => KickOff.ToString("hh:mm"),
+                FootballMatchStatusCode.Live      => PrettyPrintScore(),
+                FootballMatchStatusCode.InPlay    => PrettyPrintScore(),
+                FootballMatchStatusCode.Paused    => $"{PrettyPrintScore()} (HT)",
+                FootballMatchStatusCode.Finished  => $"{PrettyPrintScore()} (FT)",
+                FootballMatchStatusCode.Postponed => "Postponed",
+                FootballMatchStatusCode.Suspended => "Suspended",
+                FootballMatchStatusCode.Cancelled => "Cancelled",
+                _                                 => throw new Exception($"Match status code not supported: {StatusCode}")
+            }
+        ;
     }
 }

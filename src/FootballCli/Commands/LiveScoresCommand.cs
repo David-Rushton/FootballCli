@@ -89,7 +89,7 @@ namespace FootballCli.Commands
                 table.AddRow
                 (
                     $"[{colour}]{match.HomeTeam.Name}[/]",
-                    $"[{colour}]{GetScoreColumn(match)}[/]",
+                    $"[{colour}]{match.PrettyPrintState()}[/]",
                     $"[{colour}]{match.AwayTeam.Name}[/]"
                 );
             }
@@ -97,21 +97,6 @@ namespace FootballCli.Commands
             AnsiConsole.Render(table);
             AnsiConsole.MarkupLine($"[bold blue]Last updated:[/] [blue]{lastUpdated.ToLocalTime()}[/]");
         }
-
-        private string GetScoreColumn(FootballMatch match) =>
-            match.StatusCode switch
-            {
-                FootballMatchStatusCode.Scheduled => match.KickOff.ToString("hh:mm"),
-                FootballMatchStatusCode.Live      => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam}",
-                FootballMatchStatusCode.InPlay    => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam}",
-                FootballMatchStatusCode.Paused    => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam} (HT)",
-                FootballMatchStatusCode.Finished  => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam} (FT)",
-                FootballMatchStatusCode.Postponed => "Postponed",
-                FootballMatchStatusCode.Suspended => "Suspended",
-                FootballMatchStatusCode.Cancelled => "Cancelled",
-                _                                 => throw new Exception($"Match status code not supported: {match.StatusCode}")
-            }
-        ;
 
         private string PrettyPrintColour(FootballMatchStatusCode statusCode) =>
             statusCode switch
