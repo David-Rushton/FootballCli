@@ -4,6 +4,10 @@
 
 We now support different custom views for different competition tables.
 
+You can select your favourite team.  They will be highlighted in competition tables.
+
+Bug fix: Competition command now supports lower and mixed case competition codes.
+
 ## 0.3.0
 
 Follow live implemented :)
