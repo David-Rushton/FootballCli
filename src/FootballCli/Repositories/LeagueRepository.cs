@@ -17,7 +17,7 @@ namespace FootballCli.Repositories
 {
     public class LeagueRepository : RepositoryBase
     {
-        const string MatchesUri = "http://api.football-data.org/v2/competitions/<COMPETITION_CODE>/standings";
+        const string MatchesUri = "http://api.football-data.org/v2/competitions/<COMPETITION_CODE>/standings/?standingType=TOTAL";
 
         readonly ILogger<LeagueRepository> _logger;
 
@@ -30,7 +30,7 @@ namespace FootballCli.Repositories
 
         public async Task<LeagueTable> GetLeagueTable(string competitionCode)
         {
-            var uri = MatchesUri.Replace("<COMPETITION_CODE>", competitionCode);
+            var uri = MatchesUri.Replace("<COMPETITION_CODE>", competitionCode.ToUpper());
             return await base.GetResource<LeagueTable>(uri);
         }
     }
