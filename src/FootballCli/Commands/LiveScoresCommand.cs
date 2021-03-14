@@ -36,77 +36,96 @@ namespace FootballCli.Commands
 
         public override async Task<int> ExecuteAsync(CommandContext context, LiveScoresSettings settings)
         {
-            await ThrowIfCompetitionCodeInvalid(settings.CompetitionCode);
+            await ThrowIfCompetitionCodeIsInvalid(settings.CompetitionCode);
 
-            while(true)
+            if(settings.FollowLive)
             {
-                await RenderScores();
+                ConfigureConsoleForFollowLive();
 
-                if( ! settings.FollowLive )
-                    return 0;
-
-                Thread.Sleep(LiveRefreshIntervalInMilliseconds);
-            }
-
-
-            async Task ThrowIfCompetitionCodeInvalid(string competitionCode)
-            {
-                if( ! await IsCompetitionCodeValid(competitionCode) )
-                    throw new InvalidCompetitionCodeException(competitionCode);
-            }
-
-            async Task RenderScores()
-            {
-                var matches = await _matchRepository.GetLiveMatches(settings.CompetitionCode);
-                var lastUpdated = matches.Matches.Max(m => m.LastUpdate);
-                var table = new Table()
-                    .Border(TableBorder.Rounded)
-                    .AddColumn(new TableColumn("Home").RightAligned())
-                    .AddColumn(new TableColumn("Score").Centered())
-                    .AddColumn("Away")
-                ;
-
-                foreach(var match in matches.Matches)
+                while(true)
                 {
-                    var colour = PrettyPrintColour(match.StatusCode);
-                    table.AddRow
-                    (
-                        $"[{colour}]{match.HomeTeam.Name}[/]",
-                        $"[{colour}]{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam}[/]",
-                        $"[{colour}]{match.AwayTeam.Name}[/]"
-                    );
+                    await RenderScores(settings.CompetitionCode);
+                    Thread.Sleep(LiveRefreshIntervalInMilliseconds);
+                    Console.SetCursorPosition(0, 0);
                 }
-
-                AnsiConsole.Render(table);
-                AnsiConsole.MarkupLine($"[bold blue]Last updated:[/] [blue]{lastUpdated.ToLocalTime()}[/]");
             }
+            else
+                await RenderScores(settings.CompetitionCode);
 
-            string PrettyPrintColour(FootballMatchStatusCode statusCode) =>
-                statusCode switch
-                {
-                    FootballMatchStatusCode.Scheduled => "lightslategrey",
-                    FootballMatchStatusCode.Live      => "lightskyblue1",
-                    FootballMatchStatusCode.InPlay    => "lightskyblue1",
-                    FootballMatchStatusCode.Paused    => "grey58",
-                    FootballMatchStatusCode.Finished  => "bold yellow",
-                    FootballMatchStatusCode.Postponed => "red3_1",
-                    FootballMatchStatusCode.Suspended => "red3_1",
-                    FootballMatchStatusCode.Cancelled => "red3_1",
-                    _                                 => throw new Exception($"Match status code not supported: {statusCode}")
-                }
-            ;
+
+            return 0;
         }
 
 
-        private async Task<bool> IsCompetitionCodeValid(string competitionCode)
+        private async Task ThrowIfCompetitionCodeIsInvalid(string competitionCode)
         {
-            var competitionCodes =
-                from competition in (await _competitionRepository.GetCompetitions()).Items
-                select competition.Code.ToLower()
+            var _competitions = await _competitionRepository.GetCompetitions();
+
+            if( ! _competitions.IsValidCompetitionCode(competitionCode) )
+                throw new InvalidCompetitionCodeException(competitionCode);
+        }
+
+        private void ConfigureConsoleForFollowLive()
+        {
+            Console.CancelKeyPress += (o, e) => Console.CursorVisible = true;
+            Console.CursorVisible = false;
+            Console.Clear();
+        }
+
+        private async Task RenderScores(string competitionCode)
+        {
+            var matches = await _matchRepository.GetLiveMatches(competitionCode);
+            var lastUpdated = matches.Matches.Max(m => m.LastUpdate);
+            var table = new Table()
+                .Border(TableBorder.Rounded)
+                .AddColumn(new TableColumn("Home").RightAligned())
+                .AddColumn(new TableColumn("Score").Centered())
+                .AddColumn("Away")
             ;
 
+            foreach(var match in matches.Matches)
+            {
+                var colour = PrettyPrintColour(match.StatusCode);
+                table.AddRow
+                (
+                    $"[{colour}]{match.HomeTeam.Name}[/]",
+                    $"[{colour}]{GetScoreColumn(match)}[/]",
+                    $"[{colour}]{match.AwayTeam.Name}[/]"
+                );
+            }
 
-            return competitionCodes.Contains(competitionCode.ToLower());
+            AnsiConsole.Render(table);
+            AnsiConsole.MarkupLine($"[bold blue]Last updated:[/] [blue]{lastUpdated.ToLocalTime()}[/]");
         }
+
+        private string GetScoreColumn(FootballMatch match) =>
+            match.StatusCode switch
+            {
+                FootballMatchStatusCode.Scheduled => match.KickOff.ToString("hh:mm"),
+                FootballMatchStatusCode.Live      => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam}",
+                FootballMatchStatusCode.InPlay    => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam}",
+                FootballMatchStatusCode.Paused    => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam} (HT)",
+                FootballMatchStatusCode.Finished  => $"{match.Score.FullTime.HomeTeam} - {match.Score.FullTime.AwayTeam} (FT)",
+                FootballMatchStatusCode.Postponed => "Postponed",
+                FootballMatchStatusCode.Suspended => "Suspended",
+                FootballMatchStatusCode.Cancelled => "Cancelled",
+                _                                 => throw new Exception($"Match status code not supported: {match.StatusCode}")
+            }
+        ;
+
+        private string PrettyPrintColour(FootballMatchStatusCode statusCode) =>
+            statusCode switch
+            {
+                FootballMatchStatusCode.Scheduled => "lightslategrey",
+                FootballMatchStatusCode.Live      => "lightskyblue1",
+                FootballMatchStatusCode.InPlay    => "lightskyblue1",
+                FootballMatchStatusCode.Paused    => "grey58",
+                FootballMatchStatusCode.Finished  => "bold yellow",
+                FootballMatchStatusCode.Postponed => "red3_1",
+                FootballMatchStatusCode.Suspended => "red3_1",
+                FootballMatchStatusCode.Cancelled => "red3_1",
+                _                                 => throw new Exception($"Match status code not supported: {statusCode}")
+            }
+        ;
     }
 }

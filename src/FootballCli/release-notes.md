@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.4.1
+
+Following live results now looks much better.  Instead of outputting one result table after another;
+we know overwrite the previous display.
+
 ## 0.4.0
 
 We now support different custom views for different competition tables.

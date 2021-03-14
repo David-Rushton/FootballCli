@@ -23,6 +23,6 @@ namespace FootballCli.Model
         public FootballCompetitionCurrentSeason this[string code] => Items.Where(c => c.Code == code).First();
 
 
-        public bool IsValidCompetitionCode(string code) => Items.Exists(c => c.Code == code);
+        public bool IsValidCompetitionCode(string code) => Items.Exists(c => c.Code.ToLower() == code.ToLower());
     }
 }
