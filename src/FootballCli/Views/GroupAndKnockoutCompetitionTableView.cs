@@ -6,15 +6,15 @@ using System;
 
 namespace FootballCli.Views
 {
-    public class PremierLeagueTableView : TableViewBase
+    public class GroupAndKnockoutCompetitionTableView : TableViewBase
     {
-        public PremierLeagueTableView(IOptions<FavouriteTeamConfig> favouriteTeamConfig)
+        public GroupAndKnockoutCompetitionTableView(IOptions<FavouriteTeamConfig> favouriteTeamConfig)
             : base(favouriteTeamConfig)
         { }
 
 
         public override void RenderTable(LeagueTable leagueTable) =>
-            base.RenderTable(leagueTable, new[] { 4, 17 })
+            base.RenderTable(leagueTable, new[] { 2 })
         ;
     }
 }

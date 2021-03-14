@@ -14,6 +14,14 @@ namespace FootballCli.Views
 {
     public abstract class TableViewBase
     {
+        readonly FavouriteTeamConfig _favouriteTeamConfig;
+
+
+        public TableViewBase(IOptions<FavouriteTeamConfig> favouriteTeamConfig) =>
+            _favouriteTeamConfig = favouriteTeamConfig.Value
+        ;
+
+
         public virtual void RenderTable(LeagueTable leagueTable) =>
             RenderTable(leagueTable, seperatorRows: null)
         ;
@@ -24,54 +32,67 @@ namespace FootballCli.Views
             var winner = leagueTable.Season.Winner?.Name ?? string.Empty;
             var competitionName = leagueTable.Competition.Name;
             var lastUpdated = leagueTable.Competition.LastUpdated.ToString("yyyy-MM-dd hh:mm:ss");
-            var standings = leagueTable.Standings.Where(s => s.Type == "TOTAL").First();
-            var positions = standings.Positions.OrderBy(p => p.Position);
-            var table = new Table()
-                .Caption($"[bold yellow]{competitionName}[/] - [yellow]{lastUpdated}[/]")
-                .Border(TableBorder.Rounded)
-                .AddColumn(new TableColumn("Position").RightAligned())
-                .AddColumn(new TableColumn("Team").LeftAligned())
-                .AddColumn(new TableColumn("Games Played").RightAligned())
-                .AddColumn(new TableColumn("Won").RightAligned())
-                .AddColumn(new TableColumn("Drawn").RightAligned())
-                .AddColumn(new TableColumn("Lost").RightAligned())
-                .AddColumn(new TableColumn("Goals For").RightAligned())
-                .AddColumn(new TableColumn("Goals Against").RightAligned())
-                .AddColumn(new TableColumn("Goal Difference").RightAligned())
-                .AddColumn(new TableColumn("Form").Centered())
-                .AddColumn(new TableColumn("Points").RightAligned())
-            ;
 
-
-            foreach(var position in positions)
+            foreach(var standing in leagueTable.Standings)
             {
-                table.AddRow
-                (
-                    position.Position.ToString(),
-                    FormatTeamName(position.Team.Name, winner),
-                    position.PlayedGames.ToString(),
-                    position.Won.ToString(),
-                    position.Drawn.ToString(),
-                    position.Lost.ToString(),
-                    position.GoalsFor.ToString(),
-                    position.GoalsAgainst.ToString(),
-                    FormatGoalDifference(position.GoalDifference),
-                    FormatForm(position.Form),
-                    position.Points.ToString()
-                );
-
-                if(seperatorRows?.Contains(position.Position) ?? false)
-                    table.AddEmptyRow()
+                var tableTitle = $"[bold yellow]{competitionName} {standing.PrettyPrintGroup} {lastUpdated}[/]";
+                var positions = standing.Positions.OrderBy(p => p.Position);
+                var table = new Table()
+                    .Caption(tableTitle)
+                    .Border(TableBorder.Rounded)
+                    .AddColumn(new TableColumn("Position").RightAligned())
+                    .AddColumn(new TableColumn("Team").LeftAligned())
+                    .AddColumn(new TableColumn("Games Played").RightAligned())
+                    .AddColumn(new TableColumn("Won").RightAligned())
+                    .AddColumn(new TableColumn("Drawn").RightAligned())
+                    .AddColumn(new TableColumn("Lost").RightAligned())
+                    .AddColumn(new TableColumn("Goals For").RightAligned())
+                    .AddColumn(new TableColumn("Goals Against").RightAligned())
+                    .AddColumn(new TableColumn("Goal Difference").RightAligned())
+                    .AddColumn(new TableColumn("Form").Centered())
+                    .AddColumn(new TableColumn("Points").RightAligned())
                 ;
-            }
 
-            AnsiConsole.Render(table);
+
+                foreach(var position in positions)
+                {
+                    table.AddRow
+                    (
+                        position.Position.ToString(),
+                        FormatTeamName(position.Team.Name, winner),
+                        position.PlayedGames.ToString(),
+                        position.Won.ToString(),
+                        position.Drawn.ToString(),
+                        position.Lost.ToString(),
+                        position.GoalsFor.ToString(),
+                        position.GoalsAgainst.ToString(),
+                        FormatGoalDifference(position.GoalDifference),
+                        FormatForm(position.Form ?? string.Empty),
+                        position.Points.ToString()
+                    );
+
+                    if(seperatorRows?.Contains(position.Position) ?? false)
+                        table.AddEmptyRow()
+                    ;
+                }
+
+                AnsiConsole.Render(table);
+            }
         }
 
 
-        private string FormatTeamName(string teamName, string winner) =>
-            teamName == winner ? $"[bold yellow]{teamName}[/]" : teamName
-        ;
+        private string FormatTeamName(string teamName, string winner)
+        {
+            if(teamName == winner)
+                return $"[bold yellow]{teamName}[/]";
+
+            if(teamName == _favouriteTeamConfig.Name)
+                return $"[bold {_favouriteTeamConfig.Colour}]{teamName}[/]";
+
+
+            return teamName;
+        }
+
 
         private string FormatGoalDifference(int goalDifference) =>
             goalDifference switch
