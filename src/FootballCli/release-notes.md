@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.5.0
+
+Live results now highlight updated games.
+
 ## 0.4.1
 
 Following live results now looks much better.  Instead of outputting one result table after another;

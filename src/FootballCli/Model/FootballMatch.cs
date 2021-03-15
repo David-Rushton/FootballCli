@@ -62,13 +62,13 @@ namespace FootballCli.Model
         [JsonPropertyName("score")]
         public FootballMatchScore Score { get; init; } = new();
 
+        public (int Number, DateTime UtcDateTime) Revision { get; set; } = (0, DateTime.UtcNow);
 
-        public string PrettyPrintScore() => $"{Score.FullTime.HomeTeam} - {Score.FullTime.AwayTeam}";
 
         public string PrettyPrintState() =>
             StatusCode switch
             {
-                FootballMatchStatusCode.Scheduled => KickOff.ToString("hh:mm"),
+                FootballMatchStatusCode.Scheduled => KickOff.ToString("HH:mm"),
                 FootballMatchStatusCode.Live      => PrettyPrintScore(),
                 FootballMatchStatusCode.InPlay    => PrettyPrintScore(),
                 FootballMatchStatusCode.Paused    => $"{PrettyPrintScore()} (HT)",
@@ -79,5 +79,7 @@ namespace FootballCli.Model
                 _                                 => throw new Exception($"Match status code not supported: {StatusCode}")
             }
         ;
+
+        public string PrettyPrintScore() => $"{Score.FullTime.HomeTeam} - {Score.FullTime.AwayTeam}";
     }
 }
