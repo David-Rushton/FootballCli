@@ -1,3 +1,4 @@
+using FootballCli;
 using FootballCli.Config;
 using FootballCli.Commands.Settings;
 using FootballCli.Model;
@@ -39,21 +40,28 @@ namespace FootballCli.Commands
             await ThrowIfCompetitionCodeIsInvalid(settings.CompetitionCode);
 
             if(settings.FollowLive)
-            {
-                ConfigureConsoleForFollowLive();
-
-                while(true)
-                {
-                    await RenderScores(settings.CompetitionCode);
-                    Thread.Sleep(LiveRefreshIntervalInMilliseconds);
-                    Console.SetCursorPosition(0, 0);
-                }
-            }
+                await FollowLive();
             else
                 await RenderScores(settings.CompetitionCode);
 
 
             return 0;
+
+
+            async Task FollowLive()
+            {
+                ConfigureConsoleForFollowLive();
+
+                while(true)
+                    await UpdateDisplay();
+            }
+
+            async Task UpdateDisplay()
+            {
+                await RenderScores(settings.CompetitionCode);
+                Thread.Sleep(LiveRefreshIntervalInMilliseconds);
+                Console.SetCursorPosition(0, 0);
+            }
         }
 
 
@@ -85,17 +93,21 @@ namespace FootballCli.Commands
 
             foreach(var match in matches.Matches)
             {
+                var matchRevised = (match.Revision.Number > 0 && match.Revision.UtcDateTime.SecondsSinceUtcNow() is >=0 and < 120);
+
+                // todo: leading space is required.  add comment or refactor.
+                var style = matchRevised ? " slowblink" : string.Empty;
                 var colour = PrettyPrintColour(match.StatusCode);
                 table.AddRow
                 (
-                    $"[{colour}]{match.HomeTeam.Name}[/]",
-                    $"[{colour}]{match.PrettyPrintState()}[/]",
-                    $"[{colour}]{match.AwayTeam.Name}[/]"
+                    $"[{colour}{style}]{match.HomeTeam.Name}[/]",
+                    $"[{colour}{style}]{match.PrettyPrintState()}[/]",
+                    $"[{colour}{style}]{match.AwayTeam.Name}[/]"
                 );
             }
 
             AnsiConsole.Render(table);
-            AnsiConsole.MarkupLine($"[bold blue]Last updated:[/] [blue]{lastUpdated.ToLocalTime()}[/]");
+            AnsiConsole.MarkupLine($"[bold blue]Last updated:[/] [blue]{lastUpdated.ToLocalTime().ToShortTimeString()}[/]");
         }
 
         private string PrettyPrintColour(FootballMatchStatusCode statusCode) =>
