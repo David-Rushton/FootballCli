@@ -24,6 +24,8 @@ namespace FootballCli.Repositories
 
         readonly ILogger<MatchRepository> _logger;
 
+        readonly Dictionary<int, FootballMatch> _cachedResults = new();
+
 
         public MatchRepository(IOptions<SourceConfig> config, ILogger<MatchRepository> logger)
             : base(config)
@@ -31,9 +33,35 @@ namespace FootballCli.Repositories
         ;
 
 
-        public async Task<FootballMatches> GetLiveMatches(string competitionCode) =>
-            await base.GetResource<FootballMatches>(GetLiveUri(competitionCode))
-        ;
+        public async Task<FootballMatches> GetLiveMatches(string competitionCode)
+        {
+            var result = await base.GetResource<FootballMatches>(GetLiveUri(competitionCode));
+
+            // tag any match with an interesting revision (goal(s) scored, status change etc).
+            // then update cache so we can spot the next time an interesting revision occurs.
+            foreach(var match in result.Matches)
+                if(_cachedResults.TryGetValue(match.Id, out var cachedMatch))
+                {
+                    if(MatchHasBeenRevised(match, cachedMatch))
+                        IncrementRevisionAndUpdateCache(match, cachedMatch);
+                }
+                else
+                    _cachedResults.Add(match.Id, match);
+
+
+            return result;
+
+
+            bool MatchHasBeenRevised(FootballMatch match, FootballMatch cachedMatch) =>
+                match.StatusCode != cachedMatch.StatusCode || match.PrettyPrintScore() != cachedMatch.PrettyPrintScore()
+            ;
+
+            void IncrementRevisionAndUpdateCache(FootballMatch match, FootballMatch cachedMatch)
+            {
+                match.Revision = (cachedMatch.Revision.Number + 1, DateTime.UtcNow);
+                _cachedResults[match.Id] = match;
+            }
+        }
 
         public async Task<FootballMatches> GetMatchesByMatchday(string competitionCode, int matchday) =>
             await base.GetResource<FootballMatches>(GetMatchdayUri(competitionCode, matchday))
