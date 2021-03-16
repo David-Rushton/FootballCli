@@ -26,11 +26,9 @@ namespace FootballCli.Views
         ;
 
 
-        public virtual void RenderTable(LeagueTable leagueTable) =>
-            RenderTable(leagueTable, seperatorRows: null)
-        ;
+        public abstract void RenderTable(LeagueTable leagueTable, bool showFullTable);
 
-        protected void RenderTable(LeagueTable leagueTable, int[]? seperatorRows, bool showFullTable = false)
+        protected void RenderTable(LeagueTable leagueTable, int[]? seperatorRows, bool showFullTable)
         {
             var winner = leagueTable.Season.Winner?.Name ?? string.Empty;
             var competitionName = leagueTable.Competition.Name;
@@ -54,89 +52,5 @@ namespace FootballCli.Views
                 AnsiConsole.Render(table);
             }
         }
-
-        protected void RenderTable(LeagueTable leagueTable, int[]? seperatorRows)
-        {
-            var winner = leagueTable.Season.Winner?.Name ?? string.Empty;
-            var competitionName = leagueTable.Competition.Name;
-            var lastUpdated = leagueTable.Competition.LastUpdated.ToString("yyyy-MM-dd HH:mm:ss");
-
-            foreach(var standing in leagueTable.Standings)
-            {
-                var tableTitle = $"[bold yellow]{competitionName} {standing.PrettyPrintGroup} {lastUpdated}[/]";
-                var positions = standing.Positions.OrderBy(p => p.Position);
-                var table = new Table()
-                    .Caption(tableTitle)
-                    .Border(TableBorder.Rounded)
-                    .AddColumn(new TableColumn("Position").RightAligned())
-                    .AddColumn(new TableColumn("Team").LeftAligned())
-                    .AddColumn(new TableColumn("Games Played").RightAligned())
-                    .AddColumn(new TableColumn("Won").RightAligned())
-                    .AddColumn(new TableColumn("Drawn").RightAligned())
-                    .AddColumn(new TableColumn("Lost").RightAligned())
-                    .AddColumn(new TableColumn("Goals For").RightAligned())
-                    .AddColumn(new TableColumn("Goals Against").RightAligned())
-                    .AddColumn(new TableColumn("Goal Difference").RightAligned())
-                    .AddColumn(new TableColumn("Form").Centered())
-                    .AddColumn(new TableColumn("Points").RightAligned())
-                ;
-
-
-                foreach(var position in positions)
-                {
-                    table.AddRow
-                    (
-                        position.Position.ToString(),
-                        FormatTeamName(position.Team.Name, winner),
-                        position.PlayedGames.ToString(),
-                        position.Won.ToString(),
-                        position.Drawn.ToString(),
-                        position.Lost.ToString(),
-                        position.GoalsFor.ToString(),
-                        position.GoalsAgainst.ToString(),
-                        FormatGoalDifference(position.GoalDifference),
-                        FormatForm(position.Form ?? string.Empty),
-                        position.Points.ToString()
-                    );
-
-                    if(seperatorRows?.Contains(position.Position) ?? false)
-                        table.AddEmptyRow()
-                    ;
-                }
-
-                AnsiConsole.Render(table);
-            }
-        }
-
-
-        private string FormatTeamName(string teamName, string winner)
-        {
-            if(teamName == winner)
-                return $"[bold yellow]{teamName}[/]";
-
-            if(teamName == _favouriteTeamConfig.Name)
-                return $"[bold {_favouriteTeamConfig.Colour}]{teamName}[/]";
-
-
-            return teamName;
-        }
-
-
-        private string FormatGoalDifference(int goalDifference) =>
-            goalDifference switch
-            {
-                int difference when difference > 0 => $"[green]{difference}[/]",
-                int difference when difference < 0 => $"[red]{difference}[/]",
-                _                                  =>  "[lightslategrey]0[/]"
-            }
-        ;
-
-        private string FormatForm(string? form) =>
-            (form ?? string.Empty)
-                .Replace(",", string.Empty)
-                .Replace("W", "[green]W[/]")
-                .Replace("D", "[lightslategrey]D[/]")
-                .Replace("L", "[red]L[/]")
-        ;
     }
 }

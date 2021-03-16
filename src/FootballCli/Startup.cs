@@ -66,7 +66,7 @@ namespace FootballCli
 
             config.AddCommand<TableCommand>("table")
                 .WithDescription("View league standings")
-                .WithExample(new[] { "table" })
+                .WithExample(new[] { "table", "-f", "--full-table" })
             ;
 
 

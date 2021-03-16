@@ -13,8 +13,8 @@ namespace FootballCli.Views
         { }
 
 
-        public override void RenderTable(LeagueTable leagueTable) =>
-            base.RenderTable(leagueTable, new[] { 2 })
+        public override void RenderTable(LeagueTable leagueTable, bool showFullTable) =>
+            base.RenderTable(leagueTable, new[] { 2 }, showFullTable)
         ;
     }
 }

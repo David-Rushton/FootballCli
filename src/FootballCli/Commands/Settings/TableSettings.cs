@@ -10,5 +10,9 @@ namespace FootballCli.Commands.Settings
     {
         [CommandArgument(0, "<COMPETITION_CODE>")]
         public string CompetitionCode { get; set; } = string.Empty;
+
+        [CommandOption("-f|--full-table")]
+        [Description("Show the full table")]
+        public bool FollowLive { get; set; }
     }
 }

@@ -47,7 +47,7 @@ namespace FootballCli.Commands
 
             if(IsValidCompetitionCode)
             {
-                tableView.RenderTable(await _leagueRepository.GetLeagueTable(competitionCode));
+                tableView.RenderTable(await _leagueRepository.GetLeagueTable(competitionCode), settings.FollowLive);
                 return 0;
             }
 

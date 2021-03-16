@@ -1,5 +1,16 @@
 # Release Notes
 
+## 0.6.0
+
+We've introduced a new view for our league tables.  The consice view shows the most important columns.
+It is much thinner, which is helpful when you don't want to go full-screen.
+
+The full view is still available behind a switch:
+
+```
+$ football-cli table pl --full-table
+```
+
 ## 0.5.0
 
 Live results now highlight updated games.

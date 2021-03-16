@@ -11,5 +11,10 @@ namespace FootballCli.Views
         public DefaultTableView(IOptions<FavouriteTeamConfig> favouriteTeamConfig)
             : base(favouriteTeamConfig)
         { }
+
+
+        public override void RenderTable(LeagueTable leagueTable, bool showFullTable) =>
+            base.RenderTable(leagueTable, seperatorRows: null, showFullTable)
+        ;
     }
 }
