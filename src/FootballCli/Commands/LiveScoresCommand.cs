@@ -1,19 +1,9 @@
-using FootballCli;
-using FootballCli.Config;
-using FootballCli.Commands.Settings;
-using FootballCli.Model;
-using FootballCli.Repositories;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Dr.FootballCli.Commands.Settings;
+using Dr.FootballCli.Model;
+using Dr.FootballCli.Repositories;
 
-
-namespace FootballCli.Commands
+namespace Dr.FootballCli.Commands
 {
     public class LiveScoresCommand : AsyncCommand<LiveScoresSettings>
     {
@@ -106,7 +96,7 @@ namespace FootballCli.Commands
                 );
             }
 
-            AnsiConsole.Render(table);
+            AnsiConsole.Write(table);
             AnsiConsole.MarkupLine($"[bold blue]Last updated:[/] [blue]{lastUpdated.ToLocalTime().ToShortTimeString()}[/]");
         }
 

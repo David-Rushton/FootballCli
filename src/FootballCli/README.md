@@ -12,7 +12,7 @@ This app is powered by [//football-data.org](https://www.football-data.org/).  A
 source of footballing data.  You'll need an [API token](https://www.football-data.org/client/register).
 Once registered add to your local `appsettings.json` file.
 
-```
+```json
 {
     "source": {
         "apiKey": "<api-token-here>"
@@ -22,9 +22,10 @@ Once registered add to your local `appsettings.json` file.
 
 ### View Full Exception Details
 
-This project uses the excellent [Spectre.Console](https://spectresystems.github.io/spectre.console/)
-to render to the console.  Spectre.Console pretty prints exceptions, which is great for users but
-terrible for devlopers.  To view full exception messages add this env var:
+This project uses the excellent [`Spectre.Console`](https://spectresystems.github.io/spectre.console/)
+to render to the console.  `Spectre.Console` pretty prints exceptions, which is great for users but
+hides details you might need when debugging.  To view full exception messages, with stack traces, use 
+this env var:
 
 ```powershell
 $ENV:DOTNET_ENVIRONMENT = "Development"

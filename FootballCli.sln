@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{7F196810-ABB7-49C5-B41D-E000E224A7E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FootballCli", "src\FootballCli\FootballCli.csproj", "{442F5E5A-626C-457B-9715-0D15AFC97FBF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{442F5E5A-626C-457B-9715-0D15AFC97FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{442F5E5A-626C-457B-9715-0D15AFC97FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{442F5E5A-626C-457B-9715-0D15AFC97FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{442F5E5A-626C-457B-9715-0D15AFC97FBF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{442F5E5A-626C-457B-9715-0D15AFC97FBF} = {7F196810-ABB7-49C5-B41D-E000E224A7E5}
+	EndGlobalSection
+EndGlobal

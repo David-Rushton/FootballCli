@@ -1,12 +1,10 @@
-using System;
+namespace Dr.FootballCli;
 
-
-namespace FootballCli
+public class InvalidCompetitionCodeException : Exception
 {
-    public class InvalidCompetitionCodeException : Exception
+    public InvalidCompetitionCodeException(string competitionCode)
+        : base($"Competition code not supported: {competitionCode}.\nSee: FootballCli competitions")
     {
-        public InvalidCompetitionCodeException(string competitionCode)
-            : base($"Competition code not supported: {competitionCode}.\nSee: FootballCli competitions")
-        { }
+        // no-op
     }
 }

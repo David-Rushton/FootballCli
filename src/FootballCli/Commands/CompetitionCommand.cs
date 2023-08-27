@@ -1,16 +1,7 @@
-using FootballCli.Config;
-using FootballCli.Commands.Settings;
-using FootballCli.Model;
-using FootballCli.Repositories;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using System.Linq;
-using System.Threading.Tasks;
+using Dr.FootballCli.Repositories;
 
-
-namespace FootballCli.Commands
+namespace Dr.FootballCli.Commands
 {
     public class CompetitionCommand : AsyncCommand
     {
@@ -23,7 +14,6 @@ namespace FootballCli.Commands
             (_logger, _competitionRepository) = (logger, competitionRepository)
         ;
 
-
         public override async Task<int> ExecuteAsync(CommandContext context)
         {
             var allCompetitions = await _competitionRepository.GetCompetitions();
@@ -34,7 +24,7 @@ namespace FootballCli.Commands
             table.AddColumn("Name");
             table.AddColumn("Current Matchday");
 
-            foreach(var competition in allCompetitions.Items.OrderBy(c => c.Name))
+            foreach (var competition in allCompetitions.Items.OrderBy(c => c.Name))
                 table.AddRow
                 (
                     competition.Code,
@@ -42,7 +32,7 @@ namespace FootballCli.Commands
                     competition.CurrentSeason.CurrentMatchday.ToString()
                 );
 
-            AnsiConsole.Render(table);
+            AnsiConsole.Write(table);
 
             return 0;
         }

@@ -1,26 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+namespace Dr.FootballCli.Model;
 
-
-namespace FootballCli.Model
-{
-    public class FootballSeason
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; init; }
-
-        [JsonPropertyName("startDate")]
-        public DateTime StartDate { get; init; }
-
-        [JsonPropertyName("endDate")]
-        public DateTime EndDate { get; init; }
-
-        [JsonPropertyName("currentMatchday")]
-        public int CurrentMatchday { get; init; }
-
-        [JsonPropertyName("winner")]
-        public FootballSeasonWinner? Winner { get; init; } = new();
-    }
-}
+public readonly record struct FootballSeason(
+    int Id,
+    DateTime StartDate,
+    DateTime EndDate,
+    int CurrentMatchday,
+    FootballSeasonWinner? Winner);

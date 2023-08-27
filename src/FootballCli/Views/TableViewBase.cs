@@ -1,20 +1,18 @@
-using FootballCli.Config;
-using FootballCli.Commands.Settings;
-using FootballCli.Model;
-using FootballCli.Repositories;
+using Dr.FootballCli.Commands.Settings;
+using Dr.FootballCli.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
-using Spectre.Console.Cli;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using Dr.FootballCli.Config;
+using Dr.FootballCli.Model;
 using Spectre.Console.Rendering;
 
 
-namespace FootballCli.Views
+namespace Dr.FootballCli.Views
 {
     public abstract class TableViewBase
     {
@@ -49,7 +47,7 @@ namespace FootballCli.Views
                     .AddDetailRows(standing, seperatorRows)
                 ;
 
-                AnsiConsole.Render(table);
+                AnsiConsole.Write(table);
             }
         }
     }

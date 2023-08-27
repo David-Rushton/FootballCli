@@ -1,17 +1,9 @@
-using FootballCli.Config;
-using FootballCli.Commands.Settings;
-using FootballCli.Model;
-using FootballCli.Repositories;
-using FootballCli.Views;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Spectre.Console;
-using Spectre.Console.Cli;
-using System.Linq;
-using System.Threading.Tasks;
+using Dr.FootballCli.Commands.Settings;
+using Dr.FootballCli.Repositories;
+using Dr.FootballCli.Views;
 
-
-namespace FootballCli.Commands
+namespace Dr.FootballCli.Commands
 {
     public class TableCommand : AsyncCommand<TableSettings>
     {

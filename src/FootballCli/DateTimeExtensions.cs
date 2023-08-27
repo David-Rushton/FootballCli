@@ -1,12 +1,8 @@
-using System;
+namespace Dr.FootballCli;
 
-
-namespace FootballCli
+public static class DateTimeExtensions
 {
-    public static class DateTimeExtensions
-    {
-        public static int SecondsSinceUtcNow(this DateTime dateTime) =>
-            (DateTime.UtcNow - dateTime).Seconds
-        ;
-    }
+    public static int SecondsSinceUtcNow(this DateTime dateTime) =>
+        (DateTime.UtcNow - dateTime).Seconds
+    ;
 }
