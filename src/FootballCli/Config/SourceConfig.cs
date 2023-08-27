@@ -1,7 +1,6 @@
-namespace FootballCli.Config
+namespace Dr.FootballCli.Config;
+
+public class SourceConfig
 {
-    public class SourceConfig
-    {
-        public string ApiKey { get; set; } = string.Empty;
-    }
+    public string ApiKey { get; set; } = string.Empty;
 }

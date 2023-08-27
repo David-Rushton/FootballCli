@@ -1,18 +1,17 @@
-using FootballCli.Config;
-using FootballCli.Commands.Settings;
-using FootballCli.Model;
-using FootballCli.Repositories;
+using Dr.FootballCli.Config;
+using Dr.FootballCli.Commands.Settings;
+using Dr.FootballCli.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Spectre.Console;
-using Spectre.Console.Cli;
 using Spectre.Console.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dr.FootballCli.Model;
 
 
-namespace FootballCli.Views
+namespace Dr.FootballCli.Views
 {
     public static class TableExtensions
     {

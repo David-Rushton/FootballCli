@@ -1,28 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
-using Spectre.Console;
+namespace Dr.FootballCli.Model;
 
-
-namespace FootballCli.Model
+public readonly record struct FootballCompetitions(
+    int Count,
+    [property: JsonPropertyName("competitions")]
+    List<FootballCompetitionCurrentSeason> Items)
 {
-    public class FootballCompetitions
-    {
-        [JsonPropertyName("count")]
-        public int Count { get; init; }
+    public FootballCompetitionCurrentSeason this[int index] =>
+        Items[index];
 
-        [JsonPropertyName("competitions")]
-        public List<FootballCompetitionCurrentSeason> Items { get; init; } = new();
+     public FootballCompetitionCurrentSeason this[string code] =>
+         Items.First(c => c.Code == code);
 
-        public FootballCompetitionCurrentSeason this[int index] => Items[index];
-
-        public FootballCompetitionCurrentSeason this[string code] => Items.Where(c => c.Code == code).First();
-
-
-        public bool IsValidCompetitionCode(string code) => Items.Exists(c => c.Code.ToLower() == code.ToLower());
-    }
+     public bool IsValidCompetitionCode(string code) =>
+         Items.Exists(c => string.Equals(c.Code, code, StringComparison.CurrentCultureIgnoreCase));
 }

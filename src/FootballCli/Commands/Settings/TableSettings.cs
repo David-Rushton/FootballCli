@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 
 
-namespace FootballCli.Commands.Settings
+namespace Dr.FootballCli.Commands.Settings
 {
     public class TableSettings : CommandSettings
     {

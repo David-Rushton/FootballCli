@@ -1,9 +1,9 @@
-using FootballCli.Config;
 using Microsoft.Extensions.Options;
 using System;
+using Dr.FootballCli.Config;
 
 
-namespace FootballCli.Views
+namespace Dr.FootballCli.Views
 {
     public class TableViewFactory
     {

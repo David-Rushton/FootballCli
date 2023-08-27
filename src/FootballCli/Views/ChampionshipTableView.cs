@@ -1,10 +1,10 @@
-using FootballCli.Config;
-using FootballCli.Model;
 using Microsoft.Extensions.Options;
 using System;
+using Dr.FootballCli.Config;
+using Dr.FootballCli.Model;
 
 
-namespace FootballCli.Views
+namespace Dr.FootballCli.Views
 {
     public class ChampionshipTableView : TableViewBase
     {

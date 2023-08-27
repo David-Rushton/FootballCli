@@ -1,23 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+namespace Dr.FootballCli.Model;
 
-
-namespace FootballCli.Model
-{
-    public class FootballCompetition
-    {
-        [JsonPropertyName("id")]
-        public int Id { get; init; }
-
-        [JsonPropertyName("name")]
-        public string Name { get; init; } = string.Empty;
-
-        [JsonPropertyName("code")]
-        public string Code { get; init; } = string.Empty;
-
-        [JsonPropertyName("lastUpdated")]
-        public DateTime LastUpdated { get; init; }
-    }
-}
+public readonly record struct FootballCompetition(
+    int Id,
+    string Name,
+    string Code,
+    DateTime LastUpdated);
