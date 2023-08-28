@@ -1,4 +1,4 @@
-namespace Dr.FootballCli.Config;
+namespace Dr.FootballCli.Options;
 
 public class FavouriteTeamConfig
 {

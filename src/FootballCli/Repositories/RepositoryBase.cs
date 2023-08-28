@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Options;
-using Dr.FootballCli.Config;
+using Dr.FootballCli.Options;
 
 namespace Dr.FootballCli.Repositories;
 
@@ -11,9 +11,9 @@ public class RepositoryBase
 
     readonly HttpClient _client = new();
 
-    readonly SourceConfig _config;
+    readonly ApiOptions _config;
 
-    public RepositoryBase(IOptions<SourceConfig> config)
+    public RepositoryBase(IOptions<ApiOptions> config)
     {
         _config = config.Value;
         _client.BaseAddress = new System.Uri(BaseUri);

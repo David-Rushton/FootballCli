@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Dr.FootballCli.Config;
+using Dr.FootballCli.Options;
 using Dr.FootballCli.Model;
 
 namespace Dr.FootballCli.Repositories;
@@ -15,7 +15,7 @@ public class MatchRepository : RepositoryBase
 
     readonly Dictionary<int, FootballMatch> _cachedResults = new();
 
-    public MatchRepository(IOptions<SourceConfig> config, ILogger<MatchRepository> logger)
+    public MatchRepository(IOptions<ApiOptions> config, ILogger<MatchRepository> logger)
         : base(config)
         => (_logger) = (logger)
     ;

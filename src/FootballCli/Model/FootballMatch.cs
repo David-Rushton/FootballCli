@@ -11,6 +11,7 @@ public enum FootballMatchStatusCode
     Finished,
     Postponed,
     Suspended,
+    Timed,
     Cancelled
 }
 
@@ -37,6 +38,7 @@ public readonly record struct FootballMatch(
             "FINISHED"  => FootballMatchStatusCode.Finished,
             "POSTPONED" => FootballMatchStatusCode.Postponed,
             "SUSPENDED" => FootballMatchStatusCode.Suspended,
+            "TIMED"     => FootballMatchStatusCode.Timed,
             "CANCELED"  => FootballMatchStatusCode.Cancelled,
             _           => throw new Exception($"Football match status code not supported: {Status}")
         };

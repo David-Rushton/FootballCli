@@ -1,4 +1,5 @@
-﻿using Dr.FootballCli.Infrastructure;
+﻿using System.Reflection;
+using Dr.FootballCli.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,8 +18,9 @@ internal static class Program
     static CommandApp Bootstrap()
     {
         var configuration = new ConfigurationBuilder()
+            // TOOD: This isn't always the execution folder.
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", true, true)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
             .AddEnvironmentVariables("fbcli")
             .Build()
         ;

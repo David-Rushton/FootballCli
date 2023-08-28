@@ -1,4 +1,4 @@
-using Dr.FootballCli.Config;
+using Dr.FootballCli.Options;
 using Dr.FootballCli.Commands.Settings;
 using Dr.FootballCli.Repositories;
 using Microsoft.Extensions.Logging;

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dr.FootballCli.Config;
+using Dr.FootballCli.Options;
 using Dr.FootballCli.Model;
 using Spectre.Console.Rendering;
 

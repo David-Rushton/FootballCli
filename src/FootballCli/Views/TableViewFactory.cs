@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Options;
 using System;
-using Dr.FootballCli.Config;
+using Dr.FootballCli.Options;
 
 
 namespace Dr.FootballCli.Views

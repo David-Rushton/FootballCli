@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Dr.FootballCli.Config;
+using Dr.FootballCli.Options;
 using Dr.FootballCli.Model;
 
 namespace Dr.FootballCli.Repositories;
@@ -11,7 +11,7 @@ public class CompetitionRepository : RepositoryBase
 
     readonly ILogger<CompetitionRepository> _logger;
 
-    public CompetitionRepository(IOptions<SourceConfig> config, ILogger<CompetitionRepository> logger)
+    public CompetitionRepository(IOptions<ApiOptions> config, ILogger<CompetitionRepository> logger)
         : base(config)
         => (_logger) = (logger)
     ;
