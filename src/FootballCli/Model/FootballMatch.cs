@@ -7,11 +7,22 @@ public enum FootballMatchStatusCode
     Scheduled,
     Live,
     InPlay,
+    ExtraTime,
+    PenaltyShootout,
     Paused,
     Finished,
     Postponed,
     Suspended,
-    Cancelled
+    Timed,
+    Cancelled,
+    Awarded
+}
+
+public enum FootballMatchType
+{
+    Fixture,
+    Result,
+    InPlay
 }
 
 public readonly record struct FootballMatch(
@@ -21,12 +32,11 @@ public readonly record struct FootballMatch(
     DateTime LastUpdate,
     string Status,
     int MatchDay,
+    DateTime LastUpdated,
     FootballTeam HomeTeam,
     FootballTeam AwayTeam,
     FootballMatchScore Score)
 {
-    public (int Number, DateTime UtcDateTime) Revision { get; } = (0, DateTime.UtcNow);
-
     public FootballMatchStatusCode StatusCode =>
         (Status) switch
         {
@@ -37,24 +47,8 @@ public readonly record struct FootballMatch(
             "FINISHED"  => FootballMatchStatusCode.Finished,
             "POSTPONED" => FootballMatchStatusCode.Postponed,
             "SUSPENDED" => FootballMatchStatusCode.Suspended,
+            "TIMED"     => FootballMatchStatusCode.Timed,
             "CANCELED"  => FootballMatchStatusCode.Cancelled,
             _           => throw new Exception($"Football match status code not supported: {Status}")
         };
-
-    public string PrettyPrintState() =>
-        StatusCode switch
-        {
-            FootballMatchStatusCode.Scheduled => KickOff.ToString("HH:mm"),
-            FootballMatchStatusCode.Live      => PrettyPrintScore(),
-            FootballMatchStatusCode.InPlay    => PrettyPrintScore(),
-            FootballMatchStatusCode.Paused    => $"{PrettyPrintScore()} (HT)",
-            FootballMatchStatusCode.Finished  => $"{PrettyPrintScore()} (FT)",
-            FootballMatchStatusCode.Postponed => "Postponed",
-            FootballMatchStatusCode.Suspended => "Suspended",
-            FootballMatchStatusCode.Cancelled => "Cancelled",
-            _                                 => throw new Exception($"Match status code not supported: {StatusCode}")
-        };
-
-    public string PrettyPrintScore() =>
-        $"{Score.FullTime.HomeTeam} - {Score.FullTime.AwayTeam}";
 }

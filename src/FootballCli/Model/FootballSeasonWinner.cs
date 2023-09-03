@@ -5,5 +5,6 @@ public readonly record struct FootballSeasonWinner(
     string Name ,
     string ShortName,
     [property: JsonPropertyName("tla")]
-    string ThreeLetterAbbreviation,
-    string CrestUrl);
+    string? WinnerCode,
+    [property: JsonPropertyName("Crest")]
+    string? CrestUrl);

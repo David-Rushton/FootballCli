@@ -1,5 +1,8 @@
 # Football Cli
 
+[![Smoke Test Football Cli](https://github.com/David-Rushton/FootballCli/actions/workflows/smoke_test_football_cli.yml/badge.svg)](https://github.com/David-Rushton/FootballCli/actions/workflows/smoke_test_football_cli.yml)
+
+
 Folllow the match in your terminal.
 
 ## Build
