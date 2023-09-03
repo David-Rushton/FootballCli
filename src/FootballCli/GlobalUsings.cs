@@ -1,4 +1,5 @@
-﻿global using Dr.FootballCli.Commands;
+﻿global using Dr.FootballCli;
+global using Dr.FootballCli.Commands;
 global using Dr.FootballCli.Extensions;
 global using Dr.FootballCli.FootballDataOrg;
 global using Dr.FootballCli.Model;

@@ -34,7 +34,7 @@ public static class Startup
             .WithAlias("results")
             .WithAlias("result")
             .WithAlias("match")
-            .WithExample(new[] { "matches", "pl", "--during", "today" });
+            .WithExample(new[] { "matches", "pl", "--from", "-1" });
 
         return config;
     }
