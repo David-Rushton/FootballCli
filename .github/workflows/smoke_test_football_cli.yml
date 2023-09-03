@@ -28,5 +28,5 @@ jobs:
     - name: Smoke Test
       env:
         # Additional checks are run at startup in Development mode
-        DOTNET_ENVIRONMENT: Development
-      run: dotnet run --no-build -- competition
+        FOOTBALL_CLI_VALIDATE_EXAMPLES: true
+      run: dotnet run --no-build -- competitions 
