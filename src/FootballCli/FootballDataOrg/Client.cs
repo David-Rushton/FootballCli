@@ -36,18 +36,19 @@ public class Client
                 : new Uri($"{options.Value.BaseUrl}/");
     }
 
-    public async Task<FootballCompetitions> GetCompetitions() =>
-        await GetRequest<FootballCompetitions>("/v4/competitions");
+    public async Task<FootballCompetitions> GetCompetitions(bool verboseModeEnabled) =>
+        await GetRequest<FootballCompetitions>("/v4/competitions", verboseModeEnabled);
 
-    public async Task<FootballMatches> GetMatches(string competitionCode, DateTime from, DateTime until)
+    public async Task<FootballMatches> GetMatches(
+        string competitionCode, DateTime from, DateTime until, bool verboseModeEnabled)
     {
         var path = $"/v4/competitions/{competitionCode.ToUpper()}/matches?dateFrom={from:yyyy-MM-dd}&dateTo={until:yyyy-MM-dd}";
-        var matches = await GetRequest<FootballMatches>(path);
+        var matches = await GetRequest<FootballMatches>(path, verboseModeEnabled);
 
         return matches;
     }
 
-    private async Task<T> GetRequest<T>(string path)
+    private async Task<T> GetRequest<T>(string path, bool verboseModeEnabled)
     {
         try
         {
@@ -59,8 +60,10 @@ public class Client
                     $"Unable to download content from: {path}.  Status: {response.StatusCode}.  Please check your request and try again.");
 
             var json = await response.Content.ReadAsStringAsync();
-            var result = JsonSerializer.Deserialize<T>(json, _jsonOptions);
+            if (verboseModeEnabled)
+                Console.WriteLine($"\n\n{json}\n\n");
 
+            var result = JsonSerializer.Deserialize<T>(json, _jsonOptions);
             if (result is null)
                 throw new ClientDownloadFailedException(
                     "Cannot download content.  The server responded but the response was empty.");

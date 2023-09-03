@@ -50,7 +50,8 @@ public class MatchesCommand(Client client) : CommandBase<MatchesCommand.Settings
     public override async Task<int> JsonHandler(CommandContext context, Settings settings)
     {
         var timeWindow = GetTimeWindow(settings);
-        var matches = await client.GetMatches(settings.CompetitionCode, timeWindow.from, timeWindow.until);
+        var matches = await client.GetMatches(
+            settings.CompetitionCode, timeWindow.from, timeWindow.until, settings.VerboseModeEnabled);
 
         AnsiConsole.WriteLine(matches.ToJson());
 
@@ -60,7 +61,8 @@ public class MatchesCommand(Client client) : CommandBase<MatchesCommand.Settings
     public override async Task<int> ObjectHandler(CommandContext context, Settings settings)
     {
         var timeWindow = GetTimeWindow(settings);
-        var matches = await client.GetMatches(settings.CompetitionCode, timeWindow.from, timeWindow.until);
+        var matches = await client.GetMatches(
+            settings.CompetitionCode, timeWindow.from, timeWindow.until, settings.VerboseModeEnabled);
 
         foreach (var table in matches.ToMatchDayTables())
         {

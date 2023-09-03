@@ -20,15 +20,31 @@ public static class FootballCompetitionsViews
 
         return table;
 
-        static IRenderable[] GetRow(FootballCompetitionCurrentSeason competition) =>
-            new[]
+        static IRenderable[] GetRow(FootballCompetitionCurrentSeason competition)
+        {
+            var seasonDetails = competition.CurrentSeason is FootballSeason season
+                ? new
+                {
+                    StartDate = season.StartDate.ToString("yyyy-MM-dd"),
+                    EndDate = season.EndDate.ToString("yyyy-MM-dd"),
+                    MatchDay = season.CurrentMatchday.ToString() ?? string.Empty
+                }
+                : new
+                {
+                    StartDate = string.Empty,
+                    EndDate = string.Empty,
+                    MatchDay = string.Empty
+                };
+
+            return new[]
             {
-                new Markup(competition.Code),
+                new Markup(competition.Code ?? string.Empty),
                 new Markup(competition.Name),
-                new Markup($"{competition.CurrentSeason.StartDate:yyyy-MM-dd}"),
-                new Markup($"{competition.CurrentSeason.EndDate:yyyy-MM-dd}"),
-                new Markup($"{competition.CurrentSeason.CurrentMatchday ?? 0}")
+                new Markup($"{seasonDetails.StartDate:yyyy-MM-dd}"),
+                new Markup($"{seasonDetails.EndDate:yyyy-MM-dd}"),
+                new Markup($"{seasonDetails.MatchDay}")
             };
+        }
     }
 }
 
