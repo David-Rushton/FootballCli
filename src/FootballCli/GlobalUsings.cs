@@ -1,4 +1,14 @@
-﻿global using Spectre.Console;
+﻿global using Dr.FootballCli.Commands;
+global using Dr.FootballCli.Extensions;
+global using Dr.FootballCli.FootballDataOrg;
+global using Dr.FootballCli.Model;
+global using Dr.FootballCli.Options;
+global using Dr.FootballCli.Views;
+global using Microsoft.Extensions.Options;
+global using Spectre.Console;
 global using Spectre.Console.Cli;
+global using System.ComponentModel;
+global using System;
+global using System.Text;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;

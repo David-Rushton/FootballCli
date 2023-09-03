@@ -40,12 +40,9 @@ internal static class Program
                 config
                     .SetApplicationName("Football Cli")
                     .UseStrictParsing()
-                    .UseEnvironmentSpecificConfig(HostEnvironmentName)
-                    .AddCommands()
-                ;
+                    .AddCommands();
             }
         );
-
 
         return app;
     }

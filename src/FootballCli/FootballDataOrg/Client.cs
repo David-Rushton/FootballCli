@@ -1,8 +1,4 @@
-using System.Diagnostics;
-using System.Text;
-using Dr.FootballCli.Model;
-using Dr.FootballCli.Options;
-using Microsoft.Extensions.Options;
+using System.Text.RegularExpressions;
 
 namespace Dr.FootballCli.FootballDataOrg;
 
@@ -41,32 +37,14 @@ public class Client
     }
 
     public async Task<FootballCompetitions> GetCompetitions() =>
-        await GetRequest<FootballCompetitions>("/competition");
+        await GetRequest<FootballCompetitions>("/v4/competitions");
 
-    public async Task<LeagueTable> GetLeagueTable(string competitionCode) =>
-        // TODO: Validate competition code?
-        await GetRequest<LeagueTable>($"/competitions/{competitionCode}/standings");
-
-    public async Task<FootballMatches> GetFixtures(string competitionCode) =>
-        await GetFixtures(competitionCode, from: DateTime.UtcNow, DateTime.UtcNow.AddDays(7));
-
-    public async Task<FootballMatches> GetFixtures(string competitionCode, DateTime from, DateTime until)
+    public async Task<FootballMatches> GetMatches(string competitionCode, DateTime from, DateTime until)
     {
-        var path = $"/v4/competitions/{competitionCode}/matches?dateFrom={from:yyyy-MM-dd}&dateTo={until:yyyy-MM-dd}";
+        var path = $"/v4/competitions/{competitionCode.ToUpper()}/matches?dateFrom={from:yyyy-MM-dd}&dateTo={until:yyyy-MM-dd}";
         var matches = await GetRequest<FootballMatches>(path);
 
-        return matches.GetFixtures();
-    }
-
-    public async Task<FootballMatches> GetResults(string competitionCode) =>
-        await GetResults(competitionCode, from: DateTime.UtcNow.AddDays(-7), until: DateTime.UtcNow);
-
-    public async Task<FootballMatches> GetResults(string competitionCode, DateTime from, DateTime until)
-    {
-        var path = $"/competitions/{competitionCode}/matches?dateFrom={from:yyyy-MM-dd}&dateTo={until:yyyy-MM-dd}";
-        var matches = await GetRequest<FootballMatches>(path);
-
-        return matches.GetResults();
+        return matches;
     }
 
     private async Task<T> GetRequest<T>(string path)
@@ -75,11 +53,14 @@ public class Client
         {
             // TODO: Add Polly retry policy?
             var response = await _client.GetAsync(path);
+
             if (!response.IsSuccessStatusCode)
                 throw new ClientDownloadFailedException(
-                    $"Unable to download content.  Status: {response.StatusCode}.");
+                    $"Unable to download content from: {path}.  Status: {response.StatusCode}.  Please check your request and try again.");
 
-            var result = await JsonSerializer.DeserializeAsync<T>(await response.Content.ReadAsStreamAsync(), _jsonOptions);
+            var json = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<T>(json, _jsonOptions);
+
             if (result is null)
                 throw new ClientDownloadFailedException(
                     "Cannot download content.  The server responded but the response was empty.");
@@ -88,11 +69,9 @@ public class Client
         }
         catch (ClientDownloadFailedException)
         {
+            // Rethrow.  This exposed the stack trace to the command, which will print it out if in
+            // verbose mode.
             throw;
-        }
-        catch (Exception e)
-        {
-            throw new ClientDownloadFailedException("Cannot download content.  Request failed.", e);
         }
     }
 }

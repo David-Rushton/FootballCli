@@ -2,29 +2,16 @@
 
 namespace Dr.FootballCli.Infrastructure;
 
-public sealed class TypeRegistrar : ITypeRegistrar
+public sealed class TypeRegistrar(IServiceCollection builder) : ITypeRegistrar
 {
-    private readonly IServiceCollection _builder;
+    public ITypeResolver Build() =>
+        new TypeResolver(builder.BuildServiceProvider());
 
-    public TypeRegistrar(IServiceCollection builder)
-    {
-        _builder = builder;
-    }
+    public void Register(Type service, Type implementation) =>
+        builder.AddSingleton(service, implementation);
 
-    public ITypeResolver Build()
-    {
-        return new TypeResolver(_builder.BuildServiceProvider());
-    }
-
-    public void Register(Type service, Type implementation)
-    {
-        _builder.AddSingleton(service, implementation);
-    }
-
-    public void RegisterInstance(Type service, object implementation)
-    {
-        _builder.AddSingleton(service, implementation);
-    }
+    public void RegisterInstance(Type service, object implementation) =>
+        builder.AddSingleton(service, implementation);
 
     public void RegisterLazy(Type service, Func<object> func)
     {
@@ -33,6 +20,6 @@ public sealed class TypeRegistrar : ITypeRegistrar
             throw new ArgumentNullException(nameof(func));
         }
 
-        _builder.AddSingleton(service, (provider) => func());
+        builder.AddSingleton(service, (provider) => func());
     }
 }
