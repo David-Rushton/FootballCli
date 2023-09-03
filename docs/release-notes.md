@@ -29,6 +29,9 @@ $ football-cli matches --until 7
 $ football-cli matches --until +7
 ```
 
+We've also added the `-j|--json` flag.  When passed all results, including failures, are returned as
+JSON formatted strings.
+
 All other commands have been retired.  At least for now.  
 
 See our [roadmap](./road-map.md) for future plans.
