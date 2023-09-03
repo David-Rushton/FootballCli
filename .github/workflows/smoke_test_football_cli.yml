@@ -16,11 +16,11 @@ jobs:
         working-directory: src/FootballCli
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Build Football Cli 
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: 8.x.x
+        global-json-file: src/FootballCli/global.json
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
