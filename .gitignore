@@ -1,5 +1,5 @@
 ## personal
-appsettings*.json
+**/AppSettings.json
 
 
 ## Ignore Visual Studio temporary files, build results, and

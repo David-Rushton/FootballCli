@@ -12,7 +12,7 @@ CommandApp Bootstrap()
     var configuration = new ConfigurationBuilder()
         // TOOD: This isn't always the execution folder.
         .SetBasePath(Directory.GetCurrentDirectory())
-        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+        .AddJsonFile($"AppSettings.json", optional: true)
         .AddEnvironmentVariables("fbcli")
         .Build()
     ;
