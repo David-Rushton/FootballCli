@@ -32,6 +32,7 @@ public abstract class CommandBase<T> : AsyncCommand<T> where T : CommonSettings
 
             // When we are not in json mode we rethrow.
             // The exception is then caught, formatted and printed by Spectre.Console.
+            Environment.ExitCode = 1;
             throw;
         }
     }
